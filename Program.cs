@@ -1,5 +1,7 @@
 
+using _2Work_API.Common.Providers;
 using _2Work_API.Entities;
+using _2Work_API.Interfaces.Providers;
 using Microsoft.EntityFrameworkCore;
 
 namespace _2Work_API
@@ -18,7 +20,7 @@ namespace _2Work_API
             builder.Services.AddSwaggerGen();
             builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Program>());
 
-            //builder.Services.AddScoped<DBContext>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 

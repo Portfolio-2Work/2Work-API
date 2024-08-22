@@ -1,9 +1,8 @@
 ﻿using _2Work_API.Application.Users.Requests;
 using _2Work_API.Common.Enums;
 using _2Work_API.Common.Structs;
-using _2Work_API.Entities;
+using _2Work_API.Interfaces.Providers;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace _2Work_API.Application.Users.Actions;
 
@@ -14,19 +13,20 @@ public class CreateUserCommand(CreateUserRequest request) : IRequest<bool>
 
 public class CreateUserHandler : IRequestHandler<CreateUserCommand, bool>
 {
-    private readonly DBContext _dbContext;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public CreateUserHandler(DBContext dbContext)
+    public CreateUserHandler(IPasswordHasher passwordHasher)
     {
-        _dbContext = dbContext;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<bool> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
+        string hash = _passwordHasher.Hash(command.Request.Password);
+
         command.Request.TP_User = TpUser.Admin;
         command.Request.ST_Record = StRecord.Active;
-
-        var aaaaa = await (from a in _dbContext.Users select a).FirstOrDefaultAsync(cancellationToken);
+        command.Request.Password = hash;
 
         return await Task.FromResult(true);
     }
