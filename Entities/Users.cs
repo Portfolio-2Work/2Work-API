@@ -6,12 +6,8 @@ namespace _2Work_API.Entities;
 [Table("Users")]
 public class Users : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid ID { get; set; }
-
     [Required]
-    public string Name { get; set; }
+    public string NM_User { get; set; }
 
     [Required]
     public string Email { get; set; }
