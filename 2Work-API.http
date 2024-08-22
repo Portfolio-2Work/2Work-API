@@ -1,0 +1,6 @@
+@_2Work_API_HostAddress = http://localhost:5128
+
+GET {{_2Work_API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
