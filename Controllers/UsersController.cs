@@ -1,5 +1,4 @@
-﻿using _2Work_API.Application.Users.Actions;
-using _2Work_API.Application.Users.Requests;
+﻿using _2Work_API.Application.User.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +16,6 @@ namespace _2Work_API.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> Create([FromBody] CreateUserRequest request) => await _mediator.Send(new CreateUserCommand(request));
+        public async Task<bool> Create([FromBody] CreateUserCommand request) => await _mediator.Send(request);
     }
 }

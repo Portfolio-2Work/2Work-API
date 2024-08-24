@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _2Work_API.Entities;
 
-[Table("Users")]
-public class Users : BaseEntity
+[Table("TB_User")]
+public class TB_User : BaseEntity
 {
     [Required]
     public string NM_User { get; set; }
@@ -17,4 +17,7 @@ public class Users : BaseEntity
 
     [Required]
     public string ST_Record { get; set; }
+
+    [Required]
+    public string Password { get; set; }
 }

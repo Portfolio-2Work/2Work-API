@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _2Work_API.Entities
 {
-    [Table("Empresa")]
-    public class Empresa : BaseEntity
+    [Table("TB_Empresa")]
+    public class TB_Empresa : BaseEntity
     {
         [Required]
         public string NM_Empresa { get; set; }
