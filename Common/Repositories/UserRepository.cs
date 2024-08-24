@@ -10,14 +10,14 @@ namespace _2Work_API.Common.Repositories
         {
             await dbContext.TB_User.AddAsync(entity, ct);
 
-            dbContext.Entry(entity).State = EntityState.Added;
+            //dbContext.Entry(entity).State = EntityState.Added;
 
-            int saved = await dbContext.SaveChangesAsync(ct);
+            //int saved = await dbContext.SaveChangesAsync(ct);
 
-            if (saved == 0)
-            {
-                return null;
-            }
+            //if (saved == 0)
+            //{
+            //    return null;
+            //}
 
             return entity;
         }

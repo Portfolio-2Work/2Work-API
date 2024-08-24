@@ -20,11 +20,14 @@ namespace _2Work_API.Common.UnitOfWork
             try
             {
                 await _context.SaveChangesAsync(ct);
+
+                if (_transaction is not null)
+                    await _transaction.CommitAsync(ct);
             }
             catch (Exception ex)
             {
                 exception = ex;
-                await Rollback();
+                await Rollback(ct);
             }
 
             return exception;

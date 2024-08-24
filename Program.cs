@@ -1,4 +1,6 @@
 
+using _2Work_API.Application.User.Validators;
+using _2Work_API.Common.Base;
 using _2Work_API.Common.Providers;
 using _2Work_API.Common.Repositories;
 using _2Work_API.Common.UnitOfWork;
@@ -36,9 +38,15 @@ namespace _2Work_API
             builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+            builder.Services.AddScoped<CreateUserValidator>();
+
+
+            builder.Services.AddHttpContextAccessor();
+
             string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Transient);
+            builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
+
 
             var app = builder.Build();
 
@@ -49,6 +57,7 @@ namespace _2Work_API
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<CustomMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

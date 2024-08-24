@@ -1,4 +1,6 @@
 ﻿using _2Work_API.Application.User.Commands;
+using _2Work_API.Application.User.Validators;
+using _2Work_API.Common.Base;
 using _2Work_API.Common.Enums;
 using _2Work_API.Common.Structs;
 using _2Work_API.Entities;
@@ -9,10 +11,24 @@ using MediatR;
 
 namespace _2Work_API.Application.Users.Actions;
 
-public class CreateUserHandler(IPasswordHasher passwordHasher, IUnitOfWork unitOfWork, IUserRepository userRepository, IEmpresaRepository empresaRepository, IUser_x_EmpresaRepository user_X_EmpresaRepository) : IRequestHandler<CreateUserCommand, bool>
+public class CreateUserHandler(
+    IPasswordHasher passwordHasher,
+    IUnitOfWork unitOfWork,
+    IUserRepository userRepository,
+    IEmpresaRepository empresaRepository,
+    IUser_x_EmpresaRepository user_X_EmpresaRepository,
+    CreateUserValidator validator
+  ) : IRequestHandler<CreateUserCommand, ObjectResponse<bool>>
 {
-    public async Task<bool> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+    public async Task<ObjectResponse<bool>> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
+        ObjectResponse<bool> result = new();
+
+        if (!await IsValid(command, result, cancellationToken))
+        {
+            return result;
+        }
+
         await unitOfWork.BeginTransaction(cancellationToken);
 
         string hash = passwordHasher.Hash(command.User.Password);
@@ -40,7 +56,8 @@ public class CreateUserHandler(IPasswordHasher passwordHasher, IUnitOfWork unitO
 
         if (usuario is null || empresa is null)
         {
-            return false;
+            await unitOfWork.Rollback(cancellationToken);
+            return result;
         }
 
         await user_X_EmpresaRepository.Add(new()
@@ -51,6 +68,20 @@ public class CreateUserHandler(IPasswordHasher passwordHasher, IUnitOfWork unitO
             ID_TB_User = usuario.ID,
         });
 
-        return await unitOfWork.Commit(cancellationToken);
+        result.Data = await unitOfWork.Commit(cancellationToken) == null;
+
+        return result;
+    }
+
+    private async Task<bool> IsValid(CreateUserCommand command, ObjectResponse<bool> response, CancellationToken ct)
+    {
+        var validationResult = await validator.ValidateAsync(command, ct);
+
+        if (validationResult.Errors.Count > 0)
+        {
+            response.ErrorNotification.AddMessage(validationResult);
+        }
+
+        return validationResult.IsValid;
     }
 }
