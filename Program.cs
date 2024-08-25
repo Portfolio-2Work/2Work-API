@@ -1,13 +1,6 @@
-
-using _2Work_API.Application.User.Validators;
 using _2Work_API.Common.Base;
-using _2Work_API.Common.Providers;
-using _2Work_API.Common.Repositories;
-using _2Work_API.Common.UnitOfWork;
+using _2Work_API.Config;
 using _2Work_API.Entities;
-using _2Work_API.Interfaces.Providers;
-using _2Work_API.Interfaces.Repositories;
-using _2Work_API.Interfaces.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace _2Work_API
@@ -32,21 +25,18 @@ namespace _2Work_API
             builder.Services.AddSwaggerGen();
             builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Program>());
 
-            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IUser_x_EmpresaRepository, User_x_EmpresaRepository>();
-            builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-            builder.Services.AddScoped<CreateUserValidator>();
-
+            builder.Services.AddProviders();
+            builder.Services.AddRepositories();
+            builder.Services.AddValidators();
 
             builder.Services.AddHttpContextAccessor();
 
             string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            string? secretKey = builder.Configuration["jwt:secretKey"];
 
             builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
 
+            builder.Services.AddJwt(secretKey);
 
             var app = builder.Build();
 

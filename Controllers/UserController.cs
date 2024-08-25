@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _2Work_API.Controllers
 {
-    [Route("User")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase //: ApiController
     {
         private readonly IMediator _mediator;
