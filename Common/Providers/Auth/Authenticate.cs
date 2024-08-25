@@ -31,26 +31,33 @@ namespace _2Work_API.Common.Providers.Auth
                 return "";
             }
 
-            var claims = new[]
-            {
-                new Claim("id", usuario.ID.ToString()),
+            Claim[] claims =
+            [
                 new Claim("email", usuario.Email),
                 new Claim("tp_user", usuario.TP_User),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
+            ];
 
             string secretKey = configuration["jwt:secretKey"];
 
-            var privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            SymmetricSecurityKey privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            SigningCredentials credentials = new SigningCredentials(privateKey, SecurityAlgorithms.HmacSha256);
+            DateTime expiration = DateTime.UtcNow.AddMinutes(60);
 
-            var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.Sha256);
+            JwtSecurityToken token = new(
+                claims: claims,
+                expires: expiration,
+                signingCredentials: credentials
+            );
 
-            var expiration = DateTime.UtcNow.AddMinutes(60);
+            string jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwtToken;
         }
 
         public async Task<bool> AuthenticateUser(string email, string password, CancellationToken ct = default)
         {
-            var usuario = await db.TB_User.Where(w => w.Email.ToUpper() == email.ToUpper()).FirstOrDefaultAsync(ct);
+            TB_User? usuario = await db.TB_User.Where(w => w.Email.ToUpper() == email.ToUpper()).FirstOrDefaultAsync(ct);
 
             if (usuario is null)
             {

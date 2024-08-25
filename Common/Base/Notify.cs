@@ -16,17 +16,6 @@
             Messages.Add(message);
         }
 
-        public void AddMessage(IEnumerable<string> messages)
-        {
-            if (messages != null && messages.Any())
-            {
-                foreach (var message in messages)
-                {
-                    AddMessage(message);
-                }
-            }
-        }
-
         public void AddMessage(FluentValidation.Results.ValidationResult validationResult)
         {
             if (!validationResult.IsValid)
@@ -36,18 +25,5 @@
         }
 
         public List<string> GetMessages() => Messages;
-        public string GetFlatMessages()
-        {
-            var result = "";
-            if (Messages != null && Messages.Count > 0)
-            {
-                foreach (var message in Messages)
-                {
-                    result += message + ",";
-                }
-                return result;
-            }
-            return result;
-        }
     }
 }

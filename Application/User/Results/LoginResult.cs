@@ -4,5 +4,6 @@
     {
         public string Token { get; set; }
         public string NM_Usuario { get; set; }
+        public string NM_Empresa { get; set; }
     }
 }
