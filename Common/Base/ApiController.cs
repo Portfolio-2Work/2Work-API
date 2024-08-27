@@ -7,11 +7,13 @@ namespace _2Work_API.Common.Base
     [Produces("application/json")]
     public class ApiController : ControllerBase
     {
-        public readonly IMediator _mediator;
-
-        public ApiController()
+        protected IMediator Mediatr => _mediatr;
+        public IMediator _mediatr
         {
-            _mediator = HttpContext.RequestServices.GetService<IMediator>();
+            get
+            {
+                return HttpContext.RequestServices.GetService<IMediator>();
+            }
         }
     }
 }

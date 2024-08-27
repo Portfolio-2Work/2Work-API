@@ -40,9 +40,9 @@ namespace _2Work_API.Common.Providers.Auth
 
             string secretKey = configuration["jwt:secretKey"];
 
-            SymmetricSecurityKey privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            SigningCredentials credentials = new SigningCredentials(privateKey, SecurityAlgorithms.HmacSha256);
-            DateTime expiration = DateTime.UtcNow.AddMinutes(60);
+            SymmetricSecurityKey privateKey = new(Encoding.UTF8.GetBytes(secretKey));
+            SigningCredentials credentials = new(privateKey, SecurityAlgorithms.HmacSha256);
+            DateTime expiration = DateTime.Now.AddMinutes(60);
 
             JwtSecurityToken token = new(
                 claims: claims,

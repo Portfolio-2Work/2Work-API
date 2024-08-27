@@ -1,14 +1,15 @@
-﻿namespace _2Work_API.Common.Base
+﻿using System.Net;
+using System.Text.Json;
+
+namespace _2Work_API.Common.Base
 {
     public class CustomMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly Notify _notify;
 
         public CustomMiddleware(RequestDelegate next)
         {
             _next = next;
-            _notify = new();
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -19,7 +20,24 @@
             }
             catch (Exception ex)
             {
-                _notify.AddMessage(ex.Message);
+                object json = new
+                {
+                    ErrorNotification = new
+                    {
+                        Messages = new string[] { ex.Message }
+                    },
+                    IsSuccess = false
+                };
+
+                JsonSerializerOptions options = new()
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(json, options);
+
             }
         }
     }

@@ -18,9 +18,9 @@ namespace _2Work_API.Config
                 {
                     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
-                        //ValidateIssuer = true,
-                        //ValidateAudience = true,
-                        ValidateLifetime = true,
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = false,
                         ValidateIssuerSigningKey = true,
                         //ValidIssuer = builder.Configuration["jwt:secretKey"],
                         //ValidAudience = "",

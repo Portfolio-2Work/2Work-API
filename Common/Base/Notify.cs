@@ -2,11 +2,17 @@
 {
     public class Notify
     {
+        public List<string> Messages { get; set; } = new();
+
         public Notify()
         {
         }
 
-        public List<string> Messages { get; set; } = new();
+        public Notify(string msg)
+        {
+            if (!string.IsNullOrEmpty(msg))
+                Messages.Add(msg);
+        }
 
         public void AddMessage(string message)
         {

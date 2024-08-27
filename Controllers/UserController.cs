@@ -2,34 +2,23 @@
 using _2Work_API.Application.User.Requests;
 using _2Work_API.Application.User.Results;
 using _2Work_API.Common.Base;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _2Work_API.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase //: ApiController
+    public class UserController : ApiController
     {
-        private readonly IMediator _mediator;
-
-        public UserController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ObjectResponse<bool>> Create([FromBody] CreateUserCommand request) => await _mediator.Send(request);
+        public async Task<ObjectResponse<bool>> Create([FromBody] CreateUserCommand request) => await Mediatr.Send(request);
 
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ObjectResponse<LoginResult>> Login([FromBody] LoginRequest request)
         {
-            request.Token = HttpContext.Request.Headers["Bearer"];
-
-            return await _mediator.Send(request);
+            return await Mediatr.Send(request);
         }
 
         [HttpGet("teste")]
